@@ -66,7 +66,8 @@ const titleText = "Home Assistant"
 const backgroundColorStart = '#049cdb'
 const backgroundColorEnd = '#0180c8'
 const textColor = '#ffffff'
-const fontAndImageSize = 16
+const sensorFontAndImageSize = 16
+const titleFontAndImageSize = 12
 const padding = 12
 const maxNoOfSensors = 4
 
@@ -84,7 +85,7 @@ const unitSymbolMap = {
   "temperature": "thermometer.medium",
   "humidity": "humidity.fill",
   "battery": "battery.75",
-  "moisture": "drop.fill",
+  "moisture": "drop.triangle.fill",
   "timestamp": "clock.fill"
 }
 
@@ -126,11 +127,11 @@ function setupTitle(widget, titleText, icon) {
   titleStack.setPadding(3, 0, 0, 25)
   if (icon) {
    let wImage = titleStack.addImage(SFSymbol.named(icon).image)
-    wImage.imageSize = new Size(12, 12)  
+    wImage.imageSize = new Size(titleFontAndImageSize, titleFontAndImageSize)  
     titleStack.addSpacer(5)
   }
   let wTitle = titleStack.addText(titleText)
-  wTitle.font = Font.semiboldRoundedSystemFont(12)
+  wTitle.font = Font.semiboldRoundedSystemFont(titleFontAndImageSize)
   wTitle.textColor = Color.white()
 }
 
@@ -162,31 +163,38 @@ function addSensor(sensorStack, entityId) {
   const sfSymbol = getSymbolForSensor(sensor)
   const sf = SFSymbol.named(sfSymbol)
   const imageNode = icon.addImage(sf.image)
-  imageNode.imageSize = new Size(16, 16)
+  imageNode.imageSize = new Size(sensorFontAndImageSize, sensorFontAndImageSize)
   
   const value = row.addStack()
   value.setPadding(0, 0, 0, 4)
-  const valueText = value.addText(sensor.state)
-  valueText.font = Font.mediumRoundedSystemFont(16)
+  const valueText = setSensorText(value, sensor)
+  valueText.font = Font.mediumRoundedSystemFont(sensorFontAndImageSize)
   valueText.textColor = new Color(textColor)
   
   if (sensor.attributes.unit_of_measurement) {
     const unit = row.addStack()
     const unitText = unit.addText(sensor.attributes.unit_of_measurement)
-    unitText.font = Font.mediumSystemFont(16)  
+    unitText.font = Font.mediumSystemFont(sensorFontAndImageSize)  
     unitText.textColor = new Color(textColor)
   }
 
+}
+
+function setSensorText(value, sensor) {
+  if (sensor.attributes.device_class === "moisture") {
+    return sensor.state === "on" ? value.addText("Wet") : value.addText("Dry") 
+  } else {
+    return value.addText(sensor.state)
+  }
 }
 
 function addEmptyRow() {
   const row = widget.addStack()
   row.layoutHorizontally()
   const t = row.addText(' ')
-   t.font = Font.mediumSystemFont(16)
+   t.font = Font.mediumSystemFont(sensorFontAndImageSize)
 }
 
-// Fetch all states from Home Assistant
 async function fetchAllStates() {
   let req = new Request(`${hassUrl}/api/states`)
   req.headers = { 
@@ -196,7 +204,6 @@ async function fetchAllStates() {
   return await req.loadJSON();
 }
 
-// Retrieve requested entity from states
 function getState(states, entityId) {
   return states.filter(state => state.entity_id === entityId)[0]
 }
