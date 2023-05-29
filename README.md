@@ -1,0 +1,1 @@
+# home-assistant-sensor-widget-scriptable
