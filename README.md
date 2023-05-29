@@ -2,6 +2,8 @@
 
 This is a simple sensor widget for iOS using [Scriptable](https://scriptable.app/). It will provide a relativly simple way to add you sensor in a widget.
 
+![Example widget](example_widget.jpeg)
+
 ## Instructions
 
 Downlaod the Scriptable app and add the [script file](home-assistant-widget.js) as a script. You can then edit the config and add a small scriptable widget to your screen.
