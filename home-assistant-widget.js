@@ -145,7 +145,7 @@ function addSensor(sensorStack, entityId) {
   value.setPadding(0, 0, 0, 4)
   const valueText = value.addText(sensor.state)
   valueText.font = Font.mediumRoundedSystemFont(16)
-  value.textColor = new Color(textColor)
+  valueText.textColor = new Color(textColor)
   
   if (sensor.attributes.unit_of_measurement) {
     const unit = row.addStack()
