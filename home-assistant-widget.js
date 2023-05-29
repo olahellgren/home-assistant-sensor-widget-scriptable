@@ -1,27 +1,40 @@
 //  Home Assistant Sensor Widget
 //
 //  Copyright 2023 @olahellgren
+//  https://github.com/olahellgren/home-assistant-sensor-widget-scriptable
 //
 //
 //  INSTRUCTIONS
+//
+//  Download Scriptable app and add THIS script to it. This will allow you to 
+//  add a small widget to your iOS background.
 //  
 //  Start by adding the URL (IP/host and port) e.g.
 //  https://myinstance.ui.nabu.casa or
-//  http://192.168.1.101:8123.
+//  http://192.168.1.32:8123.
 //
 //  Make sure you have craeted a long lived token
 //  for one you your users, preferably a separete
 //  user with no admin rights. Your token will be
 //  used to access your home assistant.
 //
+//  Add titles and sensors in the `widgetTitlesAndSensors` array. All sensors found 
+//  will be showed as sensors and sensors not found will be shown as titles. This way
+//  it's pretty flexible to add what you want.
+
+// Confguration
+// EDIT HERE
  
 const hassUrl = "<hass base url>"
 const hassToken = "<your long lived Bearer token>"
 
-const subtitleText = "Solar Energy"
-const hassSensors = [
+const widgetTitlesAndSensors = [
+  "Solar Energy",
   "sensor.kostal_inverter_output_power",
-  "sensor.kostal_inverter_yield_today"
+  "sensor.kostal_inverter_yield_today",
+  "Weather",
+  "sensor.oregonv1_0080_temp",
+  "weather.hem"
   ]
 
 //  The MIT License
@@ -43,6 +56,10 @@ const hassSensors = [
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
 //  DEALINGS IN THE SOFTWARE.
+//
+//  ==========================
+//  Don't EDIT below this line
+//  ==========================
 
 const titleText = "Home Assistant"
 
@@ -61,6 +78,7 @@ const iconSymbolMap = {
 }
 
 const unitSymbolMap = {
+  "default": "house.fill",
   "power": "bolt.fill",
   "energy": "bolt.fill",
   "temperature": "thermometer.medium",
@@ -75,13 +93,18 @@ const mainLayout = widget.addStack()
 mainLayout.layoutVertically()
 const titleStack = mainLayout.addStack()
 titleStack.topAlignContent()
-setupTitle(titleStack, titleText, "house.fill")
+setupTitle(titleStack, titleText, unitSymbolMap.default)
 mainLayout.addSpacer()
 const sensorStack = mainLayout.addStack()
 sensorStack.layoutVertically()
 sensorStack.bottomAlignContent()
-setupTitle(sensorStack, subtitleText)
-addSensorValues(sensorStack, hassSensors)
+widgetTitlesAndSensors.forEach(entry => {
+  if (getState(states, entry)) {
+    addSensor(sensorStack, entry)
+  } else {
+    setupTitle(sensorStack, entry)
+  }
+})
 
 Script.setWidget(widget)
 Script.complete()
@@ -100,7 +123,7 @@ function setupBackground() {
 function setupTitle(widget, titleText, icon) {
   let titleStack = widget.addStack()
   titleStack.cornerRadius = 4
-  titleStack.setPadding(0, 0, 0, 25)
+  titleStack.setPadding(3, 0, 0, 25)
   if (icon) {
    let wImage = titleStack.addImage(SFSymbol.named(icon).image)
     wImage.imageSize = new Size(12, 12)  
@@ -123,7 +146,7 @@ function getSymbolForSensor(sensor) {
   } else if (unitSymbolMap[sensor.attributes.device_class]) {
     return unitSymbolMap[sensor.attributes.device_class]
   } else {
-    return "house.fill"
+    return unitSymbolMap.default
   }
 }
 
