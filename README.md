@@ -32,4 +32,8 @@ const widgetTitlesAndSensors = [
   "sensor.solar_yield_today"
   ]
 ```
+### Add link to view in Home Assistant
 
+Long press the widget, choose edit widget, and choose Open URL. Add disired link, as described below.
+
+To add a link you just mimic your web url to a view but use the `homeassistant` scheme together with `navigate`. E.g. to navigate to a lovelace view: `homeassistant://navigate/lovelace-my-home/1`, the digit at the end represent the tab number (starting at `0`).
