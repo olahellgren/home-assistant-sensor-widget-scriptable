@@ -78,15 +78,17 @@ const iconSymbolMap = {
   "mdi:calendar": "calendar"
 }
 
-const unitSymbolMap = {
+const deviceClassSymbolMap = {
   "default": "house.fill",
-  "power": "bolt.fill",
-  "energy": "bolt.fill",
-  "temperature": "thermometer.medium",
-  "humidity": "humidity.fill",
   "battery": "battery.75",
+  "energy": "bolt.fill",
+  "humidity": "humidity.fill",
   "moisture": "drop.triangle.fill",
-  "timestamp": "clock.fill"
+  "power": "bolt.fill",
+  "precipitation": "cloud.rain.fill",
+  "temperature": "thermometer.medium",
+  "timestamp": "clock.fill",
+  "wind_speed": "wind"
 }
 
 setupBackground(widget)
@@ -94,7 +96,7 @@ const mainLayout = widget.addStack()
 mainLayout.layoutVertically()
 const titleStack = mainLayout.addStack()
 titleStack.topAlignContent()
-setupTitle(titleStack, titleText, unitSymbolMap.default)
+setupTitle(titleStack, titleText, deviceClassSymbolMap.default)
 mainLayout.addSpacer()
 const sensorStack = mainLayout.addStack()
 sensorStack.layoutVertically()
@@ -144,10 +146,10 @@ function addSensorValues(sensorStack, hassSensors) {
 function getSymbolForSensor(sensor) {
   if (iconSymbolMap[sensor.attributes.icon]) {
     return iconSymbolMap[sensor.attributes.icon]
-  } else if (unitSymbolMap[sensor.attributes.device_class]) {
-    return unitSymbolMap[sensor.attributes.device_class]
+  } else if (deviceClassSymbolMap[sensor.attributes.device_class]) {
+    return deviceClassSymbolMap[sensor.attributes.device_class]
   } else {
-    return unitSymbolMap.default
+    return deviceClassSymbolMap.default
   }
 }
 

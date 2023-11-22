@@ -6,7 +6,7 @@ This is a simple sensor widget for iOS using [Scriptable](https://scriptable.app
 
 ## Instructions
 
-Downlaod the Scriptable app and add the [script file](home-assistant-widget.js) as a script. You can then edit the config and add a small scriptable widget to your screen.
+Download the Scriptable app and add the [script file](home-assistant-widget.js) as a script. You can then edit the config and add a **small** scriptable widget to your screen.
 
 When added the widget edit the widget and choose the script as widget. Voila!
 
@@ -27,9 +27,11 @@ const hassToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkw
 Add titles and sensor to the array. You can add any number of titles and sensors as long as there are room. The widget will automatically recognize titles and sensors. If it does not find the entry in your home assistant states it will diplay it as a title.
 ```js
 const widgetTitlesAndSensors = [
-  "My Title",
+  "Solar",
   "sensor.solar_power",
-  "sensor.solar_yield_today"
+  "sensor.solar_yield_today",
+  "Wind",
+  "sensor.wind_now"
   ]
 ```
 ### Add link to view in Home Assistant
