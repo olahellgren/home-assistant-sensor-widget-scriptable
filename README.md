@@ -41,16 +41,31 @@ Extra options can be added to configure your widget. Options are specified after
 
 Currently supported options:
 
-| Option (key) | Description                 | Default                  | Example Value |
-|--------------|-----------------------------|--------------------------|---------------|
-| precision    | Number of decimals to show  | N/A (shows all decimals) | 2             |
+| Option (key) | Description                              | Default                     | Example Value   |
+|--------------|------------------------------------------|-----------------------------|-----------------|
+| precision    | Number of decimals to show               | N/A (shows all decimals)    | 2               |
+| attribute    | Show an attribute value instead of state | N/A (shows entity state)    | 'friendly_name' |
+| device_class | Override automatic icon selection        | N/A (auto detection)        | 'person'        |
 
 #### Examples
-
 Simple precision option:
 ```pseduo
 "sensor.wind_now:{precision:2}"
 ```
+
+Accessing nested attributes:
+```pseduo
+"skolmat.acme_school:{attribute:calendar.11.2.courses.0,device_class:'food'}"
+```
+
+Using an attribute and custom device class:
+```pseduo
+"person.jane:{attribute:'friendly_name',device_class:'person'}"
+```
+
+Available device classes can be found in the `deviceClassSymbolMap` constant in the [script file](home-assistant-widget.js).
+
+Also feel free to add you own by checking symbols in the [SF Symbols app](https://developer.apple.com/sf-symbols/).
 
 ### Add link to view in Home Assistant
 
