@@ -82,8 +82,10 @@ const deviceClassSymbolMap = {
   "default": "house.fill",
   "battery": "battery.75",
   "energy": "bolt.fill",
+  "ev_type2": "ev.plug.ac.type.2",
   "humidity": "humidity.fill",
   "moisture": "drop.triangle.fill",
+  "person": "person.fill",
   "power": "bolt.fill",
   "precipitation": "cloud.rain.fill",
   "temperature": "thermometer.medium",
@@ -144,13 +146,19 @@ function addSensorValues(sensorStack, hassSensors) {
   })
 }
 
-function getSymbolForSensor(sensor) {
+function getSymbolForSensor(sensor, options = {}) {
+  // Check for custom device_class in options first
+  if (options.device_class && deviceClassSymbolMap[options.device_class]) {
+    return deviceClassSymbolMap[options.device_class];
+  }
+
+  // Then check for icon and device_class from sensor attributes
   if (iconSymbolMap[sensor.attributes.icon]) {
-    return iconSymbolMap[sensor.attributes.icon]
+    return iconSymbolMap[sensor.attributes.icon];
   } else if (deviceClassSymbolMap[sensor.attributes.device_class]) {
-    return deviceClassSymbolMap[sensor.attributes.device_class]
+    return deviceClassSymbolMap[sensor.attributes.device_class];
   } else {
-    return deviceClassSymbolMap.default
+    return deviceClassSymbolMap.default;
   }
 }
 
@@ -202,7 +210,7 @@ function addSensor(sensorStack, entry) {
 
   const icon = row.addStack();
   icon.setPadding(0, 0, 0, 3);
-  const sfSymbol = getSymbolForSensor(sensor);
+  const sfSymbol = getSymbolForSensor(sensor, options);
   const sf = SFSymbol.named(sfSymbol);
   const imageNode = icon.addImage(sf.image);
   imageNode.imageSize = new Size(sensorFontAndImageSize, sensorFontAndImageSize);
