@@ -1,6 +1,6 @@
 # Home Assistant Sensor Widget for iOS
 
-This is a simple sensor widget for iOS using [Scriptable](https://scriptable.app/). It will provide a relativly simple way to add you sensor in a widget.
+This is a simple sensor widget for iOS using [Scriptable](https://scriptable.app/). It will provide a relatively simple way to add you sensor in a widget.
 
 ![Example widget](example_widget.jpeg)
 
@@ -10,9 +10,9 @@ Download the Scriptable app and add the [script file](home-assistant-widget.js) 
 
 When added the widget edit the widget and choose the script as widget. Voila!
 
-## Home assistant prerequisits
+## Home assistant prerequisites
 
-1. Find your home assistant base URL (typicallly something like `https://myinstance.ui.nabu.casa` or `http://192.168.1.32:8123`)
+1. Find your home assistant base URL (typically something like `https://myinstance.ui.nabu.casa` or `http://192.168.1.32:8123`)
 2. Create a long lived token (Bearer token) for your desired user.
 3. Find you sensor entity ids (something like `sensor.oregonv1_x080_temp` or `binary_sensor.smart_water_leak_12`)
 
@@ -31,11 +31,29 @@ const widgetTitlesAndSensors = [
   "sensor.solar_power",
   "sensor.solar_yield_today",
   "Wind",
-  "sensor.wind_now"
+  "sensor.wind_now:{percision:2}"
   ]
 ```
+
+### Configuration options
+
+Extra options can be added to configure your widget. Options are specified after the sensor entity ID using the format `sensor.entity_id:{option1:value1,option2:value2}`.
+
+Currently supported options:
+
+| Option (key) | Description                 | Default                  | Example Value |
+|--------------|-----------------------------|--------------------------|---------------|
+| precision    | Number of decimals to show  | N/A (shows all decimals) | 2             |
+
+#### Examples
+
+Simple precision option:
+```pseduo
+"sensor.wind_now:{precision:2}"
+```
+
 ### Add link to view in Home Assistant
 
-Long press the widget, choose edit widget, and choose Open URL. Add disired link, as described below.
+Long press the widget, choose edit widget, and choose Open URL. Add desired link, as described below.
 
 To add a link you just mimic your web url to a view but use the `homeassistant` scheme together with `navigate`. E.g. to navigate to a lovelace view: `homeassistant://navigate/lovelace-my-home/1`, the digit at the end represent the tab number (starting at `0`).
