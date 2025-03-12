@@ -155,33 +155,39 @@ function getSymbolForSensor(sensor) {
 }
 
 function parseSensorEntry(entry) {
-  // Check if entry is a string and has options format
+  // Check if entry is a string
   if (typeof entry !== 'string') return { entityId: entry, options: {} };
 
-  const optionsMatch = entry.match(/^(.+?):\{(.+?)\}$/);
-  if (!optionsMatch) return { entityId: entry, options: {} };
+  // Check if it contains options
+  if (!entry.includes(':{')) return { entityId: entry, options: {} };
 
-  const entityId = optionsMatch[1];
-  const optionsString = optionsMatch[2];
+  // Split at the first occurrence of ':{' to separate entity_id from options
+  const [entityId, optionsText] = entry.split(/:\{(.+)/, 2);
+
+  // If no valid options format, return just the entity ID
+  if (!optionsText) return { entityId, options: {} };
+
+  // Remove the trailing '}'
+  const cleanOptionsText = optionsText.replace(/\}$/, '');
+
   const options = {};
 
-  // Parse individual options with regex
-  const optionRegex = /\s*['"]?(\w+)['"]?\s*:\s*(\d+|true|false|['"].+?['"])\s*/g;
-  let match;
+  // Match key:value pairs
+  const optionMatches = cleanOptionsText.match(/(\w+)\s*:\s*(?:(['"])([^'"]*)\2|([^,]+))/g) || [];
 
-  while ((match = optionRegex.exec(optionsString)) !== null) {
-    const key = match[1];
-    let value = match[2];
+  optionMatches.forEach(match => {
+    // Split each match at the first colon
+    const [key, rawValue] = match.split(':', 2).map(s => s.trim());
 
-    // Convert value to appropriate type
-    if (value === 'true') value = true;
-    else if (value === 'false') value = false;
-    else if (!isNaN(value)) value = Number(value);
-    else if (value.startsWith('"') || value.startsWith("'")) {
-      value = value.substring(1, value.length - 1);
-    }
+    // Process the value
+    let value;
+    if (rawValue === 'true') value = true;
+    else if (rawValue === 'false') value = false;
+    else if (!isNaN(rawValue) && !/^['"]/.test(rawValue)) value = Number(rawValue);
+    else value = rawValue.replace(/^['"]|['"]$/g, ''); // Remove surrounding quotes
+
     options[key] = value;
-  }
+  });
 
   return { entityId, options };
 }
@@ -216,16 +222,41 @@ function addSensor(sensorStack, entry) {
 }
 
 function setSensorText(value, sensor, options) {
-  let sensorValue = sensor.state;
+  let sensorValue;
+
+  // Get value from attribute if specified
+  if (options.attribute) {
+    sensorValue = getNestedValue(sensor.attributes, options.attribute);
+  } else {
+    sensorValue = sensor.state;
+  }
+
   // Apply precision formatting if specified
   if (options.precision !== undefined && !isNaN(sensorValue)) {
     sensorValue = parseFloat(sensorValue).toFixed(options.precision);
   }
+
   if (sensor.attributes.device_class === "moisture") {
     return sensor.state === "on" ? value.addText("Wet") : value.addText("Dry");
   } else {
-    return value.addText(sensorValue);
+    return value.addText(String(sensorValue));
   }
+}
+
+function getNestedValue(obj, path) {
+  if (!path) return obj;
+  const parts = path.split('.');
+  let current = obj;
+  for (const part of parts) {
+    if (current === null || current === undefined) return undefined;
+    // Handle array indices
+    if (!isNaN(part) && Array.isArray(current)) {
+      current = current[parseInt(part, 10)];
+    } else {
+      current = current[part];
+    }
+  }
+  return current;
 }
 
 function addEmptyRow() {
