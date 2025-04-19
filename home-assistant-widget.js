@@ -65,6 +65,7 @@ const titleText = "Home Assistant"
 
 const backgroundColorStart = '#049cdb'
 const backgroundColorEnd = '#0180c8'
+const headerIconColor = '#0180c8'
 const textColor = '#ffffff'
 const sensorFontAndImageSize = 16
 const titleFontAndImageSize = 12
@@ -84,7 +85,7 @@ const deviceClassSymbolMap = {
   "energy": "bolt.fill",
   "ev_type2": "ev.plug.ac.type.2",
   "humidity": "humidity.fill",
-  "moisture": "drop.triangle.fill",
+  "moisture": "pipe.and.drop.fill",
   "person": "person.fill",
   "power": "bolt.fill",
   "precipitation": "cloud.rain.fill",
@@ -131,8 +132,9 @@ function setupTitle(widget, titleText, icon) {
   titleStack.cornerRadius = 4
   titleStack.setPadding(3, 0, 0, 25)
   if (icon) {
-   let wImage = titleStack.addImage(SFSymbol.named(icon).image)
+    let wImage = titleStack.addImage(SFSymbol.named(icon).image)
     wImage.imageSize = new Size(titleFontAndImageSize, titleFontAndImageSize)
+    wImage.tintColor = new Color(headerIconColor)
     titleStack.addSpacer(5)
   }
   let wTitle = titleStack.addText(titleText)
@@ -214,6 +216,9 @@ function addSensor(sensorStack, entry) {
   const sf = SFSymbol.named(sfSymbol);
   const imageNode = icon.addImage(sf.image);
   imageNode.imageSize = new Size(sensorFontAndImageSize, sensorFontAndImageSize);
+  const iconColor = options.device_color ?
+      new Color(options.device_color) : new Color(textColor);
+  imageNode.tintColor = iconColor;
 
   const value = row.addStack();
   value.setPadding(0, 0, 0, 4);

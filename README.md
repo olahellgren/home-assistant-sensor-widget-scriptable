@@ -41,11 +41,12 @@ Extra options can be added to configure your widget. Options are specified after
 
 Currently supported options:
 
-| Option (key) | Description                              | Default                     | Example Value   |
-|--------------|------------------------------------------|-----------------------------|-----------------|
-| precision    | Number of decimals to show               | N/A (shows all decimals)    | 2               |
-| attribute    | Show an attribute value instead of state | N/A (shows entity state)    | 'friendly_name' |
-| device_class | Override automatic icon selection        | N/A (auto detection)        | 'person'        |
+| Option (key) | Description                              | Default                      | Example Value   |
+|--------------|------------------------------------------|------------------------------|-----------------|
+| precision    | Number of decimals to show               | N/A (shows all decimals)     | 2               |
+| attribute    | Show an attribute value instead of state | N/A (shows entity state)     | 'friendly_name' |
+| device_class | Override automatic icon selection        | N/A (auto detection)         | 'person'        |
+| device_color | Custom color for the icon                | Text color defined in config | '#ff9500'       |
 
 #### Examples
 Simple precision option:
